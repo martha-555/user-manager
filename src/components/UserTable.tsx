@@ -1,0 +1,91 @@
+/** @format */
+
+import { Button, Checkbox, Modal, Table, type TableColumnsType } from "antd";
+import type { TUserDataType } from "../types/types";
+import { useContext, useState } from "react";
+import { userContext } from "../context/UserProvider";
+
+import UserDataForm from "./UserDataForm";
+
+const UserTable = () => {
+  const { userList, removeUser } = useContext(userContext);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [checkedUser, setCheckedUser] = useState<TUserDataType>();
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+
+  const handleEditData = () => {
+    setIsEditOpen(true);
+    setIsModalOpen(false);
+  };
+
+  const handleRemoveUser = () => {
+    if (checkedUser) removeUser(checkedUser?.key);
+    setIsModalOpen(false);
+  };
+
+  const columns: TableColumnsType<TUserDataType> = [
+    { title: "Ім'я", dataIndex: "name", key: "name", className: "text-xl" },
+    { title: "Email", dataIndex: "email", key: "email", className: "text-xl" },
+    { title: "Роль", dataIndex: "role", key: "role", className: "text-xl" },
+    {
+      title: "Активний",
+      dataIndex: "active",
+      key: "active",
+      className: "text-xl",
+      render: (_, value) => <Checkbox checked={value.active} />,
+    },
+    {
+      title: "Дії",
+      dataIndex: "",
+      key: "x",
+      className: "text-xl",
+
+      render: (_, data) => (
+        <Button
+          type="primary"
+          onClick={() => {
+            setCheckedUser(data);
+            setIsModalOpen(true);
+          }}
+        >
+          Дії
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Table<TUserDataType>
+        className="p-8 m-8 text-3xl"
+        columns={columns}
+        dataSource={userList}
+        rowKey="key"
+      />
+      <Modal
+        closable={{ "aria-label": "Custom Close Button" }}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+      >
+        <div className="p-3 flex flex-col gap-3">
+          <Button onClick={handleEditData} block>
+            Редагувати дані
+          </Button>
+          <Button onClick={handleRemoveUser} block>
+            Видалити користувача
+          </Button>
+        </div>
+      </Modal>
+      {checkedUser && (
+        <UserDataForm
+          user={checkedUser}
+          isOpen={isEditOpen}
+          setIsOpen={setIsEditOpen}
+        />
+      )}
+    </>
+  );
+};
+
+export default UserTable;
