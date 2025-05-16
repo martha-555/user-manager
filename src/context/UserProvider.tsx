@@ -7,35 +7,30 @@ type Props = {
   children: React.ReactNode
 }
 
-type TUserContext = {
+type UserContext = {
   userList: User[]
-  checkedUser: User | null
   editUserData: (user: User) => void
   createUser: (user: User) => void
-  getCheckedUser: (user: User) => void
-  editUserRole: (role: 'user' | 'admin') => void
+  setUserMode: (role: 'user' | 'admin') => void
   removeUser: (id: number) => void
   isAdminMode: boolean
 }
 
 const initialValues = {
   userList: [],
-  checkedUser: null,
   editUserData: () => {},
   removeUser: () => {},
   createUser: () => {},
-  getCheckedUser: () => {},
-  editUserRole: () => {},
   isAdminMode: false,
+  setUserMode: () => {},
 }
 
-export const userContext = createContext<TUserContext>(initialValues)
+export const UserContext = createContext<UserContext>(initialValues)
 
 const UserProvider = ({ children }: Props) => {
   const userStorage = localStorage.getItem('users')
   const [userList, setUserList] = useState<User[]>(JSON.parse(userStorage || '[]'))
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false)
-  const [checkedUser, setCheckedUser] = useState<User | null>(null)
 
   useEffect(() => {
     if (!userStorage) {
@@ -48,53 +43,35 @@ const UserProvider = ({ children }: Props) => {
     localStorage.setItem('users', JSON.stringify(userList))
   }, [userList])
 
-  const isAdmin = (role: 'user' | 'admin') => {
+  const setUserMode = (role: 'user' | 'admin') => {
     role == 'admin' ? setIsAdminMode(true) : setIsAdminMode(false)
   }
 
   const editUserData = (user: User) => {
-    const updateUserList = userList.map((item) => (item.key === user.key ? user : item))
-    setUserList(updateUserList)
-    isAdmin(user.role)
+    setUserList(userList.map((item) => (item.key === user.key ? user : item)))
   }
 
   const removeUser = (key: number) => {
-    const updateUserList = userList.filter((user) => user.key !== key)
-    setUserList(updateUserList)
+    setUserList(userList.filter((user) => user.key !== key))
   }
 
   const createUser = (user: User) => {
     setUserList((prev) => [user, ...prev])
   }
 
-  const getCheckedUser = (user: User) => {
-    setCheckedUser(user)
-    isAdmin(user.role)
-  }
-
-  const editUserRole = (role: 'user' | 'admin') => {
-    const editUserData = userList.map((item) => {
-      return item.key == checkedUser?.key ? { ...item, role: role } : item
-    })
-    setUserList(editUserData)
-    isAdmin(role)
-  }
-
   return (
-    <userContext.Provider
+    <UserContext.Provider
       value={{
         userList,
         editUserData,
         removeUser,
         createUser,
         isAdminMode,
-        getCheckedUser,
-        checkedUser,
-        editUserRole,
+        setUserMode,
       }}
     >
       {children}
-    </userContext.Provider>
+    </UserContext.Provider>
   )
 }
 

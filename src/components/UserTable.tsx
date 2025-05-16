@@ -3,12 +3,12 @@
 import { Button, Checkbox, Modal, Table, type TableColumnsType } from 'antd'
 import type { User } from '../types/types'
 import { useContext, useState } from 'react'
-import { userContext } from '../context/UserProvider'
+import { UserContext } from '../context/UserProvider'
 
 import UserDataForm from './UserDataForm'
 
 const UserTable = () => {
-  const { userList, removeUser, getCheckedUser, isAdminMode } = useContext(userContext)
+  const { userList, removeUser, isAdminMode } = useContext(UserContext)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [checkedUser, setCheckedUser] = useState<User>()
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
@@ -57,7 +57,7 @@ const UserTable = () => {
   return (
     <>
       <Table<User>
-        className="m-8 p-8 text-3xl"
+        className="m-8 mt-[95px] p-8 text-3xl"
         columns={columns}
         dataSource={userList}
         rowKey="key"
@@ -66,7 +66,6 @@ const UserTable = () => {
         }
         onRow={(user) => ({
           onClick: () => {
-            getCheckedUser(user)
             setCheckedUser(user)
           },
         })}

@@ -3,7 +3,7 @@
 import { Button, Checkbox, Form, Input, Modal, Select } from 'antd'
 import type { User } from '../types/types'
 import { useContext, useEffect } from 'react'
-import { userContext } from '../context/UserProvider'
+import { UserContext } from '../context/UserProvider'
 type Props = {
   user?: User
   isOpen: boolean
@@ -11,20 +11,14 @@ type Props = {
 }
 
 const UserDataForm = ({ user, isOpen, setIsOpen }: Props) => {
-  const { userList, editUserData, createUser } = useContext(userContext)
+  const { userList, editUserData, createUser } = useContext(UserContext)
   const { Option } = Select
   const [form] = Form.useForm()
 
   useEffect(() => {
     if (isOpen) {
       if (user) {
-        form.setFieldsValue({
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          active: user.active,
-          key: user.key,
-        })
+        form.setFieldsValue(user)
       } else {
         form.resetFields()
       }

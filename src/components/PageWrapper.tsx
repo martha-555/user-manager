@@ -4,13 +4,13 @@ import type React from 'react'
 import AddNewUser from './AddNewUser'
 import { Radio, Space } from 'antd'
 import { useContext, useEffect, useState } from 'react'
-import { userContext } from '../context/UserProvider'
+import { UserContext } from '../context/UserProvider'
 type Props = {
   children: React.ReactNode
 }
 
 const PageWrapper = ({ children }: Props) => {
-  const { isAdminMode, editUserRole } = useContext(userContext)
+  const { isAdminMode, setUserMode } = useContext(UserContext)
   const [position, setPosition] = useState<string>('')
 
   useEffect(() => {
@@ -19,13 +19,14 @@ const PageWrapper = ({ children }: Props) => {
 
   return (
     <>
-      <header className="fixed top-0 z-[1] flex w-full justify-end bg-gray-200 p-8 text-2xl">
+      <header className="fixed top-0 z-[1] flex w-[100vw] justify-end bg-gray-200 p-8 text-2xl">
         <Space>
           <Radio.Group
             value={position}
             onChange={(e) => {
-              editUserRole(e.target.value)
-              setPosition(e.target.value)
+              const role = e.target.value
+              setUserMode(role)
+              setPosition(role)
             }}
           >
             <div className="mr-[40px]">
