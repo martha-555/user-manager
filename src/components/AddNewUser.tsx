@@ -1,15 +1,15 @@
 /** @format */
 
-import { Button } from "antd";
-import { useState } from "react";
-import UserDataForm from "./UserDataForm";
+import { Button } from 'antd'
+import { useState } from 'react'
+import UserDataForm from './UserDataForm'
 
 const AddNewUser = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleCreateUser = () => {
-    setIsOpen(true);
-  };
+    setIsOpen(true)
+  }
 
   return (
     <>
@@ -18,7 +18,7 @@ const AddNewUser = () => {
       </Button>
       {isOpen && <UserDataForm isOpen={isOpen} setIsOpen={setIsOpen} />}
     </>
-  );
-};
+  )
+}
 
-export default AddNewUser;
+export default AddNewUser
